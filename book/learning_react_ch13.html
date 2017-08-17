@@ -69,18 +69,48 @@
           );
         }
       });
+      var Contact = React.createClass({
+        render: function() {
+          return (
+            <div>
+              <h2>GOT QUESTIONS?</h2>
+              <p>>The easiest thing to do is post on
+              our <a href="http://forum.kirupa.com">forums</a>
+              </p>
+            </div>
+          )
+        }
+      });
+      var Stuff = React.createClass({
+        render: function() {
+          return (
+            <div>
+              <h2>STUFF</h2>
+              <p>Maruris sem velit, vehicula eget sodales vitae,
+              rhoncus eget sapien:</p>
+              <ol>
+                <li>fdgdg dfgdfgdsg</li>
+                <li>fdgdg dfgdfgdsgss fs</li>
+                <li>fdgdg dfgdfgdsg sdf</li>
+                <li>fdgdg dfgdfgdsg vsdfs</li>
+                <li>fdgdg dfgdfgdsg fddf fdsfsffsfs fs</li>
+              </ol>
+            </div>
+          )
+        }
+      });
       var App = React.createClass({
         render: function() {
           return (
             <div>
               <h1>Simple SPA</h1>
               <ul className="header">
-                <li>Home</li>
-                <li>Stuff</li>
-                <li>Contact</li>
+                <li><IndexLink to="/" activeClassName="active">Home</IndexLink></li>
+                <li><Link to="/stuff" activeClassName="active">Stuff</Link></li>
+                <li><Link to="/contact" activeClassName="active">Contact</Link></li>
               </ul>
               <div className="content">
-                <Home />
+                {this.props.children}
               </div>
             </div>
           )
@@ -90,7 +120,9 @@
       ReactDOM.render(
         <Router>
           <Route path="/" component={App}>
-
+            <IndexRoute component={Home} />
+            <Route path="stuff" component={Stuff} />
+            <Route path="contact" component={Contact} />
           </Route>
         </Router>,
         destination
