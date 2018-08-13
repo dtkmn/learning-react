@@ -1,0 +1,300 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Push Notification Delivery API",
+    "version": "1.0",
+    "description": "\n# Introduction\n\n<table><tbody><tr><td class = 'into_api' style='border:none;padding:0 0 0 0'>This API allows the client app to specify whether the push notification was displayed to the end user.<p>Initially this information will be used by Notify to:<li>Help determine whether the push was successful or an alternate delivery channel should be used<li>Produce aggregated reports on delivery status</p></td></tr></tbody></table>\n\n# Features\n\nThe Push Notification Delivery  API provides the features below.\n| Feature | Description |\n|---|---|\n|`Send delivery status` | Used to append a delivery status record. |\n\n# Getting Access to the API\n\n\n1. Reach out to the API-Owner or API-Support team for getting access to the API.\n\n\n\nNow head over to **Getting Started** where you can find more details about the API.\n\n# Getting Started\n\nBelow are the steps to get started with the Telstra Messaging API.\n  1. Generate an OAuth2 Token using your `Client key` and `Client secret`.\n  2. Use OAuth Token to Trigger a Request to Push Notification Delivery API\n\n\n# Frequently Asked Questions\n\n**Q: How can I send Push Notification to our customers?**\nA. You can get more information about Notify Platform <a href=\"https://wiki.ae.sda.corp.telstra.com/display/NOT/Notify\" target=\"_blank\">here</a>\n\n**Q: How can i get support for this API?**\nA. apisupport@team.telstra.com\n\n## \n"
+  },
+  "host": "private-tapi.telstra.com",
+  "basePath": "/",
+  "securityDefinitions": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "application",
+      "tokenUrl": "https://private-tapi.telstra.com/v2/oauth/token",
+      "scopes": {
+        "PUSHFCM-MGMT": "PUSHFCM-MGMT"
+      }
+    }
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v2/oauth/token": {
+      "post": {
+        "description": "To generate an OAuth2 Authentication token, pass through your `Client key` and `Client secret` that you received from API Support Team.\nThe grant_type should be left as `client_credentials` and the scope as `PUSHFCM-MGMT`.\nThe token will expire in one hour.\n",
+        "summary": "Generate OAuth2 token",
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "auth token",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "client id received from API-Support team"
+          },
+          {
+            "name": "client_secret",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "client secret received from API-Support team"
+          },
+          {
+            "name": "grant_type",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "default": "client_credentials"
+          },
+          {
+            "name": "scope",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "default": "PUSHFCM-MGMT"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/OAuthResponse"
+            },
+            "examples": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/OAuthError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/OAuthError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/OAuthError"
+            }
+          },
+          "503": {
+            "description": "The service requested is currently unavailable",
+            "schema": {
+              "$ref": "#/definitions/OAuthError"
+            }
+          }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "source": "#!/bin/bash\n# Obtain these keys from the Telstra Developer Portal or from the API-Support team\nCLIENT_KEY=\"your client key\"\nCLIENT_SECRET=\"your client secret\"\ncurl -X POST -H 'Content-Type: application/x-www-form-urlencoded' \\\n-d 'grant_type=client_credentials&amp;client_id=$CLIENT_KEY&amp;client_secret=CLIENT_SECRET&amp;scope=PUSHFCM-MGMT' \\\n'https://private-tapi.telstra.com/v2/oauth/token'\n"
+          }
+        ]
+      }
+    },
+    "/v1/notification-mgmt/push-delivery-status-tracker": {
+      "post": {
+        "description": "Update delivery status for receiving Push Notification from Notify\n",
+        "summary": "Update delivery status",
+        "tags": [
+          "Update Push Notification Delivery Status"
+        ],
+        "operationId": "Update delivery status",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Should contain AccessToken in the format \"Bearer AccessToken\".",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Should be \"application/json\".",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Request Payload",
+            "in": "body",
+            "required": true,
+            "description": "A JSON payload containing the required attributes",
+            "schema": {
+              "$ref": "#/definitions/NotificationStatusUpdateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/CreatedResponse"
+            },
+            "examples": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/FunctionalError"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/FunctionalError"
+            }
+          }
+        },
+        "security": [
+          {
+            "auth": [
+              "PUSHFCM-MGMT"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "NotificationStatusUpdateRequest": {
+      "title": "NotificationStatusUpdateRequest",
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "description": "Tracking id that embeed within the push notification.\n",
+          "type": "string",
+          "example": "aa928584-89a7-4e50-9db3-04e7375a8ac7"
+        },
+        "notificationStatus": {
+          "$ref": "#/definitions/Status"
+        }
+      }
+    },
+    "Status": {
+      "title": "Status",
+      "type": "string",
+      "enum": [
+        "RECEIVED",
+        "DISPLAYED",
+        "NOT_DISPLAYED_HIDDEN",
+        "NOT_DISPLAYED_ERROR",
+        "NOT_DISPLAYED_NO_USER",
+        "USER_CLICKED"
+      ],
+      "example": "DISPLAYED"
+    },
+    "CreatedResponse": {
+      "title": "CreatedResponse",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "example": 200
+        },
+        "time": {
+          "type": "string",
+          "example": "YYYY-MM-DD HH:MM:SS UTC"
+        },
+        "corrrelationId": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string",
+          "example": "/v1/notification-mgmt/push-delivery-status-tracker/"
+        },
+        "method": {
+          "type": "string",
+          "example": "POST"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "OAuthError": {
+      "title": "OAuthError",
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "OAuth Error message",
+          "type": "string"
+        },
+        "error_description": {
+          "description": "OAuth Error message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "error"
+      ]
+    },
+    "FunctionalError": {
+      "title": "FunctionalError",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "time": {
+          "type": "string",
+          "example": "YYYY-MM-DD HH:MM:SS UTC"
+        },
+        "corrrelationId": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string",
+          "example": "/v1/notification-mgmt/push-delivery-status-tracker/"
+        },
+        "method": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "OAuthResponse": {
+      "title": "OAuthResponse",
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "description": "OAuth access token",
+          "type": "string"
+        },
+        "token_type": {
+          "description": "OAuth token type",
+          "type": "string"
+        },
+        "expires_in": {
+          "description": "OAuth expiry time",
+          "type": "string"
+        }
+      }
+    }
+  }
+}
